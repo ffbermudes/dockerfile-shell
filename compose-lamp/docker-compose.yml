@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_DATABASE: 'mydatabase'
+
+    ports:
+      - "3306:3306"
+
+    networks:
+      - minha-rede
+
+
+  web:
+    build: ./dockerfile-php-apache
+
+    volumes:
+      - ./html:/var/www/html
+
+    depends_on:
+      - db
+
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: '123456'
+      DB_NAME: mydatabase
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    networks:
+      - minha-rede
+
+
+networks:
+  minha-rede:
+    driver: bridge
